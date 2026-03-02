@@ -66,6 +66,12 @@ class Save extends Action
             $entry->setSortOrder((int) ($data['sort_order'] ?? 0));
             $entry->setIsEnabled((bool) ($data['is_enabled'] ?? false));
 
+            // ── Store view scope ──────────────────────────────────────────
+            $storeIds = isset($data['store_ids'])
+                ? array_map('intval', (array) $data['store_ids'])
+                : [0]; // 0 = All Store Views
+            $entry->setStoreIds($storeIds);
+
             // ── Validate and store icon background color ──────────────────
             $iconBgColor = trim((string) ($data['icon_bg_color'] ?? ''));
             $entry->setIconBgEnabled((bool) ($data['icon_bg_enabled'] ?? false));

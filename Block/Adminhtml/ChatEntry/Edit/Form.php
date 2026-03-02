@@ -10,6 +10,7 @@ use Magento\Backend\Block\Widget\Form\Generic;
 use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Data\FormFactory;
 use Magento\Framework\Registry;
+use Magento\Store\Model\System\Store as SystemStore;
 
 /**
  * Admin edit/add form for a single Chat Entry.
@@ -24,6 +25,7 @@ class Form extends Generic
         Registry $registry,
         FormFactory $formFactory,
         private readonly DataPersistorInterface $dataPersistor,
+        private readonly SystemStore $systemStore,
         array $data = []
     ) {
         parent::__construct($context, $registry, $formFactory, $data);
@@ -174,6 +176,18 @@ class Form extends Generic
             'class' => 'validate-number',
             'value' => '0',
         ]);
+
+        // ── Store View scope ─────────────────────────────────────────────
+        if (!$this->_storeManager->isSingleStoreMode()) {
+            $fieldset->addField('store_ids', 'multiselect', [
+                'name'     => 'store_ids[]',
+                'label'    => __('Store View'),
+                'title'    => __('Store View'),
+                'required' => true,
+                'values'   => $this->systemStore->getStoreValuesForForm(false, true),
+                'note'     => __('Select one or more store views, or "All Store Views".'),
+            ]);
+        }
 
         $fieldset->addField('is_enabled', 'select', [
             'name'   => 'is_enabled',

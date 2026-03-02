@@ -115,4 +115,20 @@ class ChatEntry extends AbstractModel implements ChatEntryInterface
     {
         return $this->getData(self::UPDATED_AT);
     }
+
+    /** @return int[] */
+    public function getStoreIds(): array
+    {
+        $ids = $this->getData(self::STORE_IDS);
+        if (is_array($ids)) {
+            return array_map('intval', $ids);
+        }
+        return [0];
+    }
+
+    /** @param int[] $storeIds */
+    public function setStoreIds(array $storeIds): static
+    {
+        return $this->setData(self::STORE_IDS, $storeIds);
+    }
 }

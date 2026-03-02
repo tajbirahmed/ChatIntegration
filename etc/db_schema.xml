@@ -32,4 +32,27 @@
             <column name="sort_order"/>
         </index>
     </table>
+
+    <table name="bs23_chat_entry_store" resource="default" engine="innodb"
+           comment="BS23 Chat Entry – Store View Relation">
+        <column xsi:type="int"      name="entry_id" unsigned="true" nullable="false" comment="Entry ID"/>
+        <column xsi:type="smallint" name="store_id"  unsigned="true" nullable="false" comment="Store ID"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entry_id"/>
+            <column name="store_id"/>
+        </constraint>
+        <constraint xsi:type="foreign"
+                    referenceId="BS23_CHAT_ENTRY_STORE_ENTRY_ID_BS23_CHAT_ENTRY_ENTRY_ID"
+                    table="bs23_chat_entry_store" column="entry_id"
+                    referenceTable="bs23_chat_entry" referenceColumn="entry_id"
+                    onDelete="CASCADE"/>
+        <constraint xsi:type="foreign"
+                    referenceId="BS23_CHAT_ENTRY_STORE_STORE_ID_STORE_STORE_ID"
+                    table="bs23_chat_entry_store" column="store_id"
+                    referenceTable="store" referenceColumn="store_id"
+                    onDelete="CASCADE"/>
+        <index referenceId="BS23_CHAT_ENTRY_STORE_STORE_ID" indexType="btree">
+            <column name="store_id"/>
+        </index>
+    </table>
 </schema>

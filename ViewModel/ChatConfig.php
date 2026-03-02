@@ -69,7 +69,9 @@ class ChatConfig implements ArgumentInterface
     }
 
     /**
-     * Return all enabled chat entries ordered by sort_order ASC.
+     * Return enabled chat entries for the current store view, ordered by sort_order ASC.
+     *
+     * Entries assigned to store_id = 0 ("All Store Views") are always included.
      *
      * @return ChatEntryInterface[]
      */
@@ -77,6 +79,7 @@ class ChatConfig implements ArgumentInterface
     {
         $collection = $this->collectionFactory->create();
         $collection->addFieldToFilter('is_enabled', ['eq' => 1]);
+        $collection->addStoreFilter((int) $this->storeManager->getStore()->getId());
         $collection->setOrder('sort_order', 'ASC');
 
         return array_values($collection->getItems());

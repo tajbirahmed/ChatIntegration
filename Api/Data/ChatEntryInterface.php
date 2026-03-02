@@ -15,6 +15,8 @@ interface ChatEntryInterface
     public const ICON_BG_COLOR   = 'icon_bg_color';
     public const ICON_BG_ENABLED = 'icon_bg_enabled';
 
+    public const STORE_IDS  = 'store_ids';
+
     public const ENTRY_ID   = 'entry_id';
     public const NAME       = 'name';
     public const URL        = 'url';
@@ -50,4 +52,10 @@ interface ChatEntryInterface
 
     public function getCreatedAt(): ?string;
     public function getUpdatedAt(): ?string;
+
+    /** @return int[] */
+    public function getStoreIds(): array;
+
+    /** @param int[] $storeIds */
+    public function setStoreIds(array $storeIds): static;
 }
