@@ -1,0 +1,22 @@
+{
+    "name": "bs23/module-chat-integration",
+    "description": "Magento 2 Multi-Chat Integration Extension – configurable floating chat bubble aggregating multiple business chat links.",
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "magento/framework": ">=103.0.0",
+        "magento/module-store": ">=101.1.0",
+        "magento/module-backend": ">=102.0.0",
+        "magento/module-config": ">=101.2.0",
+        "magento/module-ui": ">=101.2.0",
+        "magento/module-media-storage": ">=100.4.0"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {
+            "BS23\\ChatIntegration\\": ""
+        }
+    }
+}

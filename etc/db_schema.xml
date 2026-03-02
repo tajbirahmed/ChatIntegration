@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="bs23_chat_entry" resource="default" engine="innodb" comment="BS23 Chat Integration Entries">
+        <column xsi:type="int" name="entry_id" unsigned="true" nullable="false" identity="true"
+                comment="Entry ID"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255"
+                comment="Chat Name (label shown in tooltip)"/>
+        <column xsi:type="text" name="url" nullable="false"
+                comment="Deep Link URL"/>
+        <column xsi:type="varchar" name="icon" nullable="true" length="255"
+                comment="Icon file path relative to media/bs23/chatentry/"/>
+        <column xsi:type="int" name="sort_order" unsigned="true" nullable="false" default="0"
+                comment="Display Sort Order"/>
+        <column xsi:type="smallint" name="is_enabled" unsigned="true" nullable="false" default="1"
+                comment="Is Enabled (1=Yes, 0=No)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false"
+                default="CURRENT_TIMESTAMP" comment="Updated At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entry_id"/>
+        </constraint>
+        <index referenceId="BS23_CHAT_ENTRY_IS_ENABLED" indexType="btree">
+            <column name="is_enabled"/>
+        </index>
+        <index referenceId="BS23_CHAT_ENTRY_SORT_ORDER" indexType="btree">
+            <column name="sort_order"/>
+        </index>
+    </table>
+</schema>

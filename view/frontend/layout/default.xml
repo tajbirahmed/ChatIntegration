@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!--
+    Injects the floating chat bubble block into every frontend page.
+    The block is placed just before </body> to avoid render-blocking.
+    CSS is loaded in <head>; JS is deferred so it never blocks rendering.
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <!-- Non-critical CSS for the floating widget; isolated from above-the-fold content -->
+        <css src="BS23_ChatIntegration::css/chat-bubble.css"/>
+    </head>
+    <body>
+        <referenceContainer name="before.body.end">
+            <block class="Magento\Framework\View\Element\Template"
+                   name="bs23.chat.bubble"
+                   template="BS23_ChatIntegration::chat/bubble.phtml"
+                   after="-">
+                <arguments>
+                    <!-- ViewModel replaces helpers; no logic in template -->
+                    <argument name="view_model"
+                              xsi:type="object">BS23\ChatIntegration\ViewModel\ChatConfig</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

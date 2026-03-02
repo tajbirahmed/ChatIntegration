@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+
+    <!-- Repository binding -->
+    <preference for="BS23\ChatIntegration\Api\ChatEntryRepositoryInterface"
+                type="BS23\ChatIntegration\Model\ChatEntryRepository"/>
+    <preference for="BS23\ChatIntegration\Api\Data\ChatEntryInterface"
+                type="BS23\ChatIntegration\Model\ChatEntry"/>
+
+    <!--
+        Virtual type for the icon image uploader.
+        Configures allowed paths and extensions without a new class.
+    -->
+    <virtualType name="BS23\ChatIntegration\Model\ChatEntryImageUploader"
+                 type="BS23\ChatIntegration\Model\ImageUploader">
+        <arguments>
+            <argument name="baseTmpPath" xsi:type="string">bs23/chatentry/tmp</argument>
+            <argument name="basePath" xsi:type="string">bs23/chatentry</argument>
+            <argument name="allowedExtensions" xsi:type="array">
+                <item name="svg"  xsi:type="string">svg</item>
+                <item name="png"  xsi:type="string">png</item>
+                <item name="jpg"  xsi:type="string">jpg</item>
+                <item name="jpeg" xsi:type="string">jpeg</item>
+                <item name="webp" xsi:type="string">webp</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Inject the virtual uploader into the Upload controller -->
+    <type name="BS23\ChatIntegration\Controller\Adminhtml\ChatEntry\Upload">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">
+                BS23\ChatIntegration\Model\ChatEntryImageUploader
+            </argument>
+        </arguments>
+    </type>
+
+    <!-- Inject the virtual uploader into the Save controller -->
+    <type name="BS23\ChatIntegration\Controller\Adminhtml\ChatEntry\Save">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">
+                BS23\ChatIntegration\Model\ChatEntryImageUploader
+            </argument>
+        </arguments>
+    </type>
+</config>

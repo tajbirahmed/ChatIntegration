@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <bs23_chat_integration>
+            <general>
+                <enabled>1</enabled>
+                <position>lower_right</position>
+                <layout_style>vertical</layout_style>
+            </general>
+            <appearance>
+                <bubble_size>56</bubble_size>
+                <icon_size>24</icon_size>
+                <icon_spacing>12</icon_spacing>
+                <bubble_bg_color>#25D366</bubble_bg_color>
+                <hover_effect>1</hover_effect>
+                <max_file_size>512</max_file_size>
+            </appearance>
+        </bs23_chat_integration>
+    </default>
+</config>

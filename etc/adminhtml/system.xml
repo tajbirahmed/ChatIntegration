@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <!-- BS23 tab shared across all BS23 modules -->
+        <tab id="bs23" translate="label" sortOrder="400">
+            <label>BS23</label>
+        </tab>
+
+        <section id="bs23_chat_integration" translate="label" sortOrder="100"
+                 showInDefault="1" showInWebsite="1" showInStore="1">
+            <tab>bs23</tab>
+            <label>Chat Integration</label>
+            <resource>BS23_ChatIntegration::config</resource>
+
+            <!-- ── General ───────────────────────────────────────── -->
+            <group id="general" translate="label" sortOrder="10"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+
+                <field id="enabled" translate="label" type="select" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Chat Integration</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="position" translate="label comment" type="select" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bubble Position</label>
+                    <source_model>BS23\ChatIntegration\Model\Config\Source\Position</source_model>
+                    <comment>Fixed position of the floating chat bubble on the storefront.</comment>
+                </field>
+
+                <field id="layout_style" translate="label comment" type="select" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Chat Layout Style</label>
+                    <source_model>BS23\ChatIntegration\Model\Config\Source\LayoutStyle</source_model>
+                    <comment>How chat options are displayed when the bubble is clicked.</comment>
+                </field>
+            </group>
+
+            <!-- ── Appearance ─────────────────────────────────────── -->
+            <group id="appearance" translate="label" sortOrder="20"
+                   showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Appearance &amp; Sizing</label>
+
+                <field id="bubble_size" translate="label comment" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Main Bubble Size (px)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Width and height of the main floating button. Default: 56</comment>
+                </field>
+
+                <field id="icon_size" translate="label comment" type="text" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Chat Icon Size (px)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Width and height of each chat platform icon. Default: 24</comment>
+                </field>
+
+                <field id="icon_spacing" translate="label comment" type="text" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Spacing Between Chat Icons (px)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Gap between individual chat option buttons. Default: 12</comment>
+                </field>
+
+                <field id="bubble_bg_color" translate="label comment" type="text" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Main Bubble Background Color</label>
+                    <comment>Valid CSS hex color, e.g. #25D366. Default: #25D366</comment>
+                </field>
+
+                <field id="hover_effect" translate="label" type="select" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Hover Effect</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
+                <field id="max_file_size" translate="label comment" type="text" sortOrder="60"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Icon Upload Size (KB)</label>
+                    <validate>validate-number validate-greater-than-zero</validate>
+                    <comment>Maximum allowed file size when uploading chat icons. Default: 512 KB</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

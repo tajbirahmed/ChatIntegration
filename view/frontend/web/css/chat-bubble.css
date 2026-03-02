@@ -1,0 +1,389 @@
+/**
+ * BS23 Chat Integration – Floating Chat Bubble Stylesheet
+ *
+ * Architecture:
+ *   - All admin-configurable values are injected as inline CSS custom properties
+ *     on the wrapper element (see bubble.phtml). Fallback values below match
+ *     the defaults in etc/config.xml.
+ *   - Positions are controlled by modifier classes (.bs23-pos-*).
+ *   - Layout modes are controlled by modifier classes (.bs23-layout-*).
+ *   - Open state is toggled via the .is-active class (added by chat-bubble.js).
+ *   - Circular item positions use --bs23-ring-x/y set by JS trigonometry.
+ *   - All transitions are ≤ 300 ms to stay within UX requirement.
+ *   - prefers-reduced-motion is respected.
+ *
+ * Custom properties (set inline on .bs23-chat-wrapper):
+ *   --bs23-bubble-size   default 56px
+ *   --bs23-icon-size     default 24px
+ *   --bs23-icon-spacing  default 12px
+ *   --bs23-bubble-bg     default #25D366
+ */
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   1. WRAPPER
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-chat-wrapper {
+    position: fixed;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* No width/height – sized by content */
+}
+
+/* ── Positions ─────────────────────────────────────────────────────────── */
+.bs23-pos-lower-right {
+    right: 24px;
+    bottom: 24px;
+}
+.bs23-pos-lower-left {
+    left: 24px;
+    bottom: 24px;
+    align-items: flex-start;
+}
+.bs23-pos-upper-right {
+    right: 24px;
+    top: 24px;
+    flex-direction: column-reverse; /* options appear below button */
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   2. MAIN BUBBLE BUTTON
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-bubble-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--bs23-bubble-size, 56px);
+    height: var(--bs23-bubble-size, 56px);
+    border-radius: 50%;
+    background-color: var(--bs23-bubble-bg, #25D366);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .22);
+    transition: transform .2s ease, box-shadow .2s ease;
+    position: relative;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+    /* Ensure minimum 44 × 44 tap target on mobile */
+    min-width: 44px;
+    min-height: 44px;
+}
+
+/* Hover scale (class toggled by admin setting) */
+.bs23-hover-on .bs23-bubble-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .28);
+}
+
+.bs23-bubble-btn:focus-visible {
+    outline: 3px solid rgba(255, 255, 255, .8);
+    outline-offset: 3px;
+}
+
+/* Inline SVG icons (open/close arrows) keep icon-size */
+.bs23-bubble-btn svg {
+    width: var(--bs23-icon-size, 24px);
+    height: var(--bs23-icon-size, 24px);
+    display: block;
+    pointer-events: none;
+}
+
+/* Uploaded icon images fill the whole bubble with a small inset padding */
+.bs23-bubble-btn img {
+    width: calc(var(--bs23-bubble-size, 56px) - 16px);
+    height: calc(var(--bs23-bubble-size, 56px) - 16px);
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+    border-radius: 50%;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   3. OPEN / CLOSE ICON CROSSFADE
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-icon {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity .2s ease, transform .25s ease;
+}
+
+/* Closed state: show chat icon, hide × */
+.bs23-icon-open  { opacity: 1; transform: rotate(0deg) scale(1); }
+.bs23-icon-close { opacity: 0; transform: rotate(-90deg) scale(.6); }
+
+/* Open state: swap */
+.is-active .bs23-icon-open  { opacity: 0; transform: rotate(90deg) scale(.6); }
+.is-active .bs23-icon-close { opacity: 1; transform: rotate(0deg) scale(1); }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   4. CHAT OPTIONS PANEL
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-chat-options {
+    display: flex;
+    gap: var(--bs23-icon-spacing, 12px);
+    /* Hidden until .is-active */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .25s ease;
+}
+
+.is-active .bs23-chat-options {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   5. LAYOUT MODES
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Vertical Stack (default) ──────────────────────────────────────────── */
+.bs23-layout-vertical .bs23-chat-options {
+    flex-direction: column-reverse; /* newest/top item closest to bubble */
+    align-items: flex-end;
+    margin-bottom: var(--bs23-icon-spacing, 12px);
+}
+.bs23-pos-lower-left.bs23-layout-vertical .bs23-chat-options {
+    align-items: flex-start;
+}
+
+/* ── Horizontal Row ────────────────────────────────────────────────────── */
+.bs23-layout-horizontal .bs23-chat-options {
+    flex-direction: row-reverse;
+    align-items: center;
+    margin-right: var(--bs23-icon-spacing, 12px);
+}
+.bs23-pos-lower-left.bs23-layout-horizontal .bs23-chat-options {
+    flex-direction: row;
+    margin-right: 0;
+    margin-left: var(--bs23-icon-spacing, 12px);
+}
+
+/* ── Circular / Ring Layout ────────────────────────────────────────────── */
+/*
+ * The wrapper becomes a positioning context.
+ * JS sets --bs23-ring-x / --bs23-ring-y per item.
+ * Items start at the bubble centre then translate outward.
+ */
+.bs23-layout-circular {
+    position: fixed; /* re-declared to make stacking context explicit */
+}
+.bs23-layout-circular .bs23-chat-options {
+    position: absolute;
+    /* Fill the bubble footprint so items radiate from its centre */
+    width: var(--bs23-bubble-size, 56px);
+    height: var(--bs23-bubble-size, 56px);
+    bottom: 0;
+    right: 0;
+    /* Overflow intentionally visible – ring extends beyond wrapper bounds */
+    overflow: visible;
+    gap: 0;
+    pointer-events: none;
+}
+.bs23-pos-lower-left.bs23-layout-circular .bs23-chat-options {
+    right: auto;
+    left: 0;
+}
+
+.bs23-layout-circular.is-active .bs23-chat-options {
+    pointer-events: auto;
+}
+
+.bs23-layout-circular .bs23-chat-option {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* JS injects --bs23-ring-x/y; translate centres item then shifts it outward */
+    transform: translate(
+        calc(var(--bs23-ring-x, 0px) - 50%),
+        calc(var(--bs23-ring-y, 0px) - 50%)
+    ) scale(.4);
+    opacity: 0;
+    transition: transform .3s ease, opacity .3s ease;
+}
+.bs23-layout-circular.is-active .bs23-chat-option {
+    transform: translate(
+        calc(var(--bs23-ring-x, 0px) - 50%),
+        calc(var(--bs23-ring-y, 0px) - 50%)
+    ) scale(1);
+    opacity: 1;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   6. INDIVIDUAL CHAT OPTION ITEM (vertical / horizontal layouts)
+═══════════════════════════════════════════════════════════════════════════ */
+/* Start collapsed/below, animate into place */
+.bs23-layout-vertical .bs23-chat-option,
+.bs23-layout-horizontal .bs23-chat-option {
+    transform: scale(.7) translateY(8px);
+    opacity: 0;
+    transition: transform .25s ease, opacity .25s ease;
+}
+.bs23-layout-horizontal .bs23-chat-option {
+    transform: scale(.7) translateX(8px);
+}
+
+.bs23-layout-vertical.is-active .bs23-chat-option,
+.bs23-layout-horizontal.is-active .bs23-chat-option {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+}
+.bs23-layout-horizontal.is-active .bs23-chat-option {
+    transform: scale(1) translateX(0);
+}
+
+/* Staggered entrance delays (up to 8 items) */
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(1),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(1),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(1) { transition-delay: .03s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(2),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(2),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(2) { transition-delay: .06s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(3),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(3),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(3) { transition-delay: .09s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(4),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(4),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(4) { transition-delay: .12s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(5),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(5),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(5) { transition-delay: .15s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(6),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(6),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(6) { transition-delay: .18s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(7),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(7),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(7) { transition-delay: .21s; }
+.bs23-layout-vertical.is-active .bs23-chat-option:nth-child(8),
+.bs23-layout-horizontal.is-active .bs23-chat-option:nth-child(8),
+.bs23-layout-circular.is-active .bs23-chat-option:nth-child(8) { transition-delay: .24s; }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   7. CHAT LINK BUTTON
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-chat-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: calc(var(--bs23-bubble-size, 56px) * .82);
+    height: calc(var(--bs23-bubble-size, 56px) * .82);
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+    text-decoration: none;
+    position: relative;
+    transition: transform .2s ease, box-shadow .2s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.bs23-hover-on .bs23-chat-link:hover {
+    transform: scale(1.12);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
+}
+
+.bs23-chat-link:focus-visible {
+    outline: 3px solid var(--bs23-bubble-bg, #25D366);
+    outline-offset: 2px;
+}
+
+.bs23-chat-link img {
+    width: var(--bs23-icon-size, 24px);
+    height: var(--bs23-icon-size, 24px);
+    object-fit: contain;
+    border-radius: 4px;
+    display: block;
+    pointer-events: none;
+}
+
+.bs23-icon-fallback {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   8. TOOLTIP
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-chat-tooltip {
+    position: absolute;
+    /* Default: tooltip appears to the left of the icon */
+    right: calc(100% + 9px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(30, 30, 30, .82);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.4;
+    padding: 4px 10px;
+    border-radius: 4px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .18s ease;
+    /* Prevent tooltip clipping by positioned ancestors */
+    z-index: 1;
+}
+
+/* For lower-left position and upper-right: tooltip on the right side */
+.bs23-pos-lower-left .bs23-chat-tooltip {
+    right: auto;
+    left: calc(100% + 9px);
+}
+
+/* Show on hover / focus */
+.bs23-hover-on .bs23-chat-link:hover .bs23-chat-tooltip,
+.bs23-chat-link:focus-visible .bs23-chat-tooltip {
+    opacity: 1;
+}
+
+/* Circular layout: tooltip above the icon */
+.bs23-layout-circular .bs23-chat-tooltip {
+    right: auto;
+    left: 50%;
+    top: auto;
+    bottom: calc(100% + 5px);
+    transform: translateX(-50%);
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   9. RESPONSIVE / MOBILE
+═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 480px) {
+    .bs23-pos-lower-right { right: 16px; bottom: 16px; }
+    .bs23-pos-lower-left  { left: 16px;  bottom: 16px; }
+    .bs23-pos-upper-right { right: 16px; top: 16px; }
+
+    /* Reduce ring radius slightly on small screens */
+    .bs23-layout-circular .bs23-chat-options {
+        --bs23-ring-scale: .85;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   10. ACCESSIBILITY – REDUCED MOTION
+═══════════════════════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+    .bs23-chat-wrapper *,
+    .bs23-chat-wrapper *::before,
+    .bs23-chat-wrapper *::after {
+        transition-duration: .01ms !important;
+        animation-duration:  .01ms !important;
+    }
+}

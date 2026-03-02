@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">bs23_chatentry_form.bs23_chatentry_form_data_source</item>
+        </item>
+        <item name="label" xsi:type="string" translate="true">Chat Entry Information</item>
+        <item name="reverseMetadataMerge" xsi:type="boolean">true</item>
+    </argument>
+
+    <settings>
+        <buttons>
+            <button name="back">
+                <url path="*/*/index"/>
+                <class>back</class>
+                <label translate="true">Back</label>
+            </button>
+            <button name="save">
+                <url path="*/*/save"/>
+                <class>save primary</class>
+                <label translate="true">Save Chat Entry</label>
+            </button>
+        </buttons>
+        <namespace>bs23_chatentry_form</namespace>
+        <dataScope>data</dataScope>
+        <deps>
+            <dep>bs23_chatentry_form.bs23_chatentry_form_data_source</dep>
+        </deps>
+    </settings>
+
+    <!-- ── Data Source ──────────────────────────────────────────────────── -->
+    <dataSource name="bs23_chatentry_form_data_source">
+        <argument name="data" xsi:type="array">
+            <item name="js_config" xsi:type="array">
+                <item name="component" xsi:type="string">Magento_Ui/js/form/provider</item>
+            </item>
+        </argument>
+        <settings>
+            <submitUrl path="bs23_chatintegration/chatentry/save"/>
+        </settings>
+        <dataProvider class="BS23\ChatIntegration\Ui\DataProvider\ChatEntry\Form\DataProvider"
+                      name="bs23_chatentry_form_data_source">
+            <settings>
+                <requestFieldName>entry_id</requestFieldName>
+                <primaryFieldName>entry_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+
+    <!-- ── General Information fieldset ────────────────────────────────── -->
+    <fieldset name="general">
+        <settings>
+            <label translate="true">Chat Entry Details</label>
+        </settings>
+
+        <!-- Hidden primary key -->
+        <field name="entry_id" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <visible>false</visible>
+            </settings>
+        </field>
+
+        <!-- Chat Name -->
+        <field name="name" sortOrder="10" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Chat Name</label>
+                <dataScope>name</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                    <rule name="max_text_length" xsi:type="number">255</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Deep Link URL -->
+        <field name="url" sortOrder="20" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Deep Link URL</label>
+                <dataScope>url</dataScope>
+                <tooltip>
+                    <description translate="true">
+                        The full URL used to open the chat (e.g. https://wa.me/1234567890).
+                        Opens in a new tab with rel="noopener noreferrer".
+                    </description>
+                </tooltip>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                    <rule name="validate-url"   xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Icon Upload -->
+        <field name="icon" sortOrder="30"
+               formElement="fileUploader">
+            <settings>
+                <label translate="true">Chat Icon</label>
+                <dataScope>icon</dataScope>
+                <notice translate="true">Allowed types: SVG, PNG, JPG, WebP. Max size defined in configuration.</notice>
+            </settings>
+            <formElements>
+                <fileUploader>
+                    <settings>
+                        <allowedExtensions>svg png jpg jpeg webp</allowedExtensions>
+                        <uploaderConfig>
+                            <param name="url" xsi:type="url" path="bs23_chatintegration/chatentry/upload"/>
+                        </uploaderConfig>
+                        <maxFileSize>524288</maxFileSize>
+                    </settings>
+                </fileUploader>
+            </formElements>
+        </field>
+
+        <!-- Sort Order -->
+        <field name="sort_order" sortOrder="40" formElement="input">
+            <settings>
+                <dataType>number</dataType>
+                <label translate="true">Sort Order</label>
+                <dataScope>sort_order</dataScope>
+                <validation>
+                    <rule name="validate-number" xsi:type="boolean">true</rule>
+                </validation>
+            </settings>
+        </field>
+
+        <!-- Enable / Disable toggle -->
+        <field name="is_enabled" sortOrder="50" formElement="checkbox">
+            <settings>
+                <dataType>boolean</dataType>
+                <label translate="true">Enabled</label>
+                <dataScope>is_enabled</dataScope>
+            </settings>
+            <formElements>
+                <checkbox>
+                    <settings>
+                        <valueMap>
+                            <map name="false" xsi:type="number">0</map>
+                            <map name="true"  xsi:type="number">1</map>
+                        </valueMap>
+                        <prefer>toggle</prefer>
+                    </settings>
+                </checkbox>
+            </formElements>
+        </field>
+    </fieldset>
+</form>

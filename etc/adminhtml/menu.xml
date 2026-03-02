@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <!-- Top-level parent under Stores -->
+        <add id="BS23_ChatIntegration::main"
+             title="Chat Integration"
+             module="BS23_ChatIntegration"
+             sortOrder="100"
+             resource="BS23_ChatIntegration::main"
+             parent="Magento_Backend::stores_settings"/>
+
+        <!-- Chat Entries sub-menu -->
+        <add id="BS23_ChatIntegration::chat_entry"
+             title="Chat Entries"
+             module="BS23_ChatIntegration"
+             sortOrder="10"
+             action="bs23_chatintegration/chatentry/index"
+             resource="BS23_ChatIntegration::chat_entry"
+             parent="BS23_ChatIntegration::main"/>
+    </menu>
+</config>
