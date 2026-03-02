@@ -68,7 +68,8 @@
                 <field id="bubble_bg_color" translate="label comment" type="text" sortOrder="40"
                        showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Main Bubble Background Color</label>
-                    <comment>Valid CSS hex color, e.g. #25D366. Default: #25D366</comment>
+                    <frontend_model>BS23\ChatIntegration\Block\Adminhtml\System\Config\ColorPicker</frontend_model>
+                    <comment>Click the swatch to open the colour picker. Value is stored as #rrggbb hex.</comment>
                 </field>
 
                 <field id="hover_effect" translate="label" type="select" sortOrder="50"
