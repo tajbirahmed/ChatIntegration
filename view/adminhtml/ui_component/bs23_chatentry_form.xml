@@ -116,6 +116,19 @@
             </formElements>
         </field>
 
+        <!-- Icon Background Color -->
+        <field name="icon_bg_color" sortOrder="35" formElement="input">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Icon Background Color</label>
+                <dataScope>icon_bg_color</dataScope>
+                <notice translate="true">Hex color for the chat icon button background (e.g. #25D366). Leave blank for white.</notice>
+                <validation>
+                    <rule name="validate-css-color" xsi:type="boolean">false</rule>
+                </validation>
+            </settings>
+        </field>
+
         <!-- Sort Order -->
         <field name="sort_order" sortOrder="40" formElement="input">
             <settings>

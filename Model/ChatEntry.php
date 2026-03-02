@@ -65,6 +65,27 @@ class ChatEntry extends AbstractModel implements ChatEntryInterface
         return $this->setData(self::ICON, $icon);
     }
 
+    public function getIconBgColor(): ?string
+    {
+        $color = $this->getData(self::ICON_BG_COLOR);
+        return $color !== null && $color !== '' ? (string) $color : null;
+    }
+
+    public function setIconBgColor(?string $color): static
+    {
+        return $this->setData(self::ICON_BG_COLOR, $color);
+    }
+
+    public function getIconBgEnabled(): bool
+    {
+        return (bool) $this->getData(self::ICON_BG_ENABLED);
+    }
+
+    public function setIconBgEnabled(bool $enabled): static
+    {
+        return $this->setData(self::ICON_BG_ENABLED, $enabled ? 1 : 0);
+    }
+
     public function getSortOrder(): int
     {
         return (int) $this->getData(self::SORT_ORDER);

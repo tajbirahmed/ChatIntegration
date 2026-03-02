@@ -14,6 +14,10 @@
                 comment="Display Sort Order"/>
         <column xsi:type="smallint" name="is_enabled" unsigned="true" nullable="false" default="1"
                 comment="Is Enabled (1=Yes, 0=No)"/>
+        <column xsi:type="varchar" name="icon_bg_color" nullable="true" length="7"
+                comment="Icon Button Background Color (hex, e.g. #25D366)"/>
+        <column xsi:type="smallint" name="icon_bg_enabled" unsigned="true" nullable="false" default="0"
+                comment="Icon Background Color Enabled (1=Yes, 0=No)"/>
         <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false"
                 default="CURRENT_TIMESTAMP" comment="Created At"/>
         <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false"

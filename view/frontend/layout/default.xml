@@ -9,6 +9,7 @@
     <head>
         <!-- Non-critical CSS for the floating widget; isolated from above-the-fold content -->
         <css src="BS23_ChatIntegration::css/chat-bubble.css"/>
+        <script src="BS23_ChatIntegration::js/chat-bubble.js"/>
     </head>
     <body>
         <referenceContainer name="before.body.end">

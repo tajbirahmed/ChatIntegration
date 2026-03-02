@@ -12,6 +12,7 @@
                 <bubble_size>56</bubble_size>
                 <icon_size>24</icon_size>
                 <icon_spacing>12</icon_spacing>
+                <bubble_bg_enabled>1</bubble_bg_enabled>
                 <bubble_bg_color>#25D366</bubble_bg_color>
                 <hover_effect>1</hover_effect>
                 <max_file_size>512</max_file_size>

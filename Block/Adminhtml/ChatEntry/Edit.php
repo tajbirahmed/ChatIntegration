@@ -6,7 +6,7 @@ namespace BS23\ChatIntegration\Block\Adminhtml\ChatEntry;
 
 use Magento\Backend\Block\Widget\Form\Container;
 use Magento\Backend\Block\Widget\Context;
-use Magento\Framework\Registry;
+use Magento\Framework\App\Request\DataPersistorInterface;
 
 /**
  * Admin form container for Chat Entry add/edit page.
@@ -15,7 +15,7 @@ class Edit extends Container
 {
     public function __construct(
         Context $context,
-        private readonly Registry $coreRegistry,
+        private readonly DataPersistorInterface $dataPersistor,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -45,10 +45,10 @@ class Edit extends Container
 
     public function getHeaderText(): \Magento\Framework\Phrase
     {
-        $entry = $this->coreRegistry->registry('bs23_chat_entry');
+        $data = $this->dataPersistor->get('bs23_chat_entry');
 
-        if ($entry && $entry->getId()) {
-            return __('Edit Chat Entry "%1"', $this->escapeHtml($entry->getName()));
+        if (!empty($data['entry_id'])) {
+            return __('Edit Chat Entry "%1"', $this->escapeHtml((string) ($data['name'] ?? '')));
         }
 
         return __('New Chat Entry');

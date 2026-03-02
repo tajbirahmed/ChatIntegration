@@ -8,9 +8,9 @@ use BS23\ChatIntegration\Api\ChatEntryRepositoryInterface;
 use BS23\ChatIntegration\Model\ChatEntryFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
+use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\NoSuchEntityException;
-use Magento\Framework\Registry;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
@@ -26,7 +26,7 @@ class Edit extends Action
         private readonly PageFactory $resultPageFactory,
         private readonly ChatEntryRepositoryInterface $chatEntryRepository,
         private readonly ChatEntryFactory $chatEntryFactory,
-        private readonly Registry $coreRegistry
+        private readonly DataPersistorInterface $dataPersistor
     ) {
         parent::__construct($context);
     }
@@ -46,8 +46,7 @@ class Edit extends Action
             $entry = $this->chatEntryFactory->create();
         }
 
-        // Register so the form block can read it without ObjectManager
-        $this->coreRegistry->register('bs23_chat_entry', $entry);
+        $this->dataPersistor->set('bs23_chat_entry', $entry->getData());
 
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu('BS23_ChatIntegration::chat_entry');

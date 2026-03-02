@@ -65,11 +65,20 @@
                     <comment>Gap between individual chat option buttons. Default: 12</comment>
                 </field>
 
+                <field id="bubble_bg_enabled" translate="label" type="select" sortOrder="38"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Bubble Background Color</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
                 <field id="bubble_bg_color" translate="label comment" type="text" sortOrder="40"
                        showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Main Bubble Background Color</label>
                     <frontend_model>BS23\ChatIntegration\Block\Adminhtml\System\Config\ColorPicker</frontend_model>
                     <comment>Click the swatch to open the colour picker. Value is stored as #rrggbb hex.</comment>
+                    <depends>
+                        <field id="bubble_bg_enabled">1</field>
+                    </depends>
                 </field>
 
                 <field id="hover_effect" translate="label" type="select" sortOrder="50"
@@ -83,6 +92,24 @@
                     <label>Max Icon Upload Size (KB)</label>
                     <validate>validate-number validate-greater-than-zero</validate>
                     <comment>Maximum allowed file size when uploading chat icons. Default: 512 KB</comment>
+                </field>
+
+                <field id="bubble_icon" translate="label comment" type="image" sortOrder="70"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Bubble Icon</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="0">bs23/chatintegration</upload_dir>
+                    <base_url type="media" scope_info="0">bs23/chatintegration</base_url>
+                    <comment>Replaces the default chat SVG on the main bubble button. PNG, JPG, GIF accepted. Leave blank to use the default icon.</comment>
+                </field>
+
+                <field id="close_icon" translate="label comment" type="image" sortOrder="80"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Custom Close (×) Icon</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="0">bs23/chatintegration</upload_dir>
+                    <base_url type="media" scope_info="0">bs23/chatintegration</base_url>
+                    <comment>Replaces the default × SVG shown when the panel is open. PNG, JPG, GIF accepted. Leave blank to use the default icon.</comment>
                 </field>
             </group>
         </section>

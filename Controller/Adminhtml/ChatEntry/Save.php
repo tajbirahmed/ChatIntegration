@@ -25,7 +25,8 @@ class Save extends Action
     public const ADMIN_RESOURCE = 'BS23_ChatIntegration::chat_entry';
 
     private const ALLOWED_EXTENSIONS = ['svg', 'png', 'jpg', 'jpeg', 'webp'];
-    private const MEDIA_SUBDIR       = 'bs23/chatentry';
+    private const ALLOWED_MIME_TYPES  = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/webp'];
+    private const MEDIA_SUBDIR        = 'bs23/chatentry';
 
     public function __construct(
         Context $context,
@@ -64,6 +65,15 @@ class Save extends Action
             $entry->setUrl($url);
             $entry->setSortOrder((int) ($data['sort_order'] ?? 0));
             $entry->setIsEnabled((bool) ($data['is_enabled'] ?? false));
+
+            // ── Validate and store icon background color ──────────────────
+            $iconBgColor = trim((string) ($data['icon_bg_color'] ?? ''));
+            $entry->setIconBgEnabled((bool) ($data['icon_bg_enabled'] ?? false));
+            $entry->setIconBgColor(
+                preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $iconBgColor)
+                    ? $iconBgColor
+                    : null
+            );
 
             // ── Handle optional icon file upload ─────────────────────────
             $iconName = $this->uploadIcon($entry->getIcon());
@@ -108,6 +118,15 @@ class Save extends Action
         }
 
         try {
+            // Validate MIME type from actual file bytes before handing off to uploader
+            $finfo    = new \finfo(\FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->file($file['tmp_name']);
+            if (!in_array($mimeType, self::ALLOWED_MIME_TYPES, true)) {
+                throw new LocalizedException(
+                    __('File type "%1" is not allowed. Accepted formats: SVG, PNG, JPG, WebP.', $mimeType)
+                );
+            }
+
             $uploader = $this->uploaderFactory->create(['fileId' => 'icon_file']);
             $uploader->setAllowedExtensions(self::ALLOWED_EXTENSIONS);
             $uploader->setAllowRenameFiles(true);

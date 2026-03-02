@@ -22,9 +22,12 @@ class Config
     private const XML_BUBBLE_SIZE     = 'bs23_chat_integration/appearance/bubble_size';
     private const XML_ICON_SIZE       = 'bs23_chat_integration/appearance/icon_size';
     private const XML_ICON_SPACING    = 'bs23_chat_integration/appearance/icon_spacing';
-    private const XML_BUBBLE_BG_COLOR = 'bs23_chat_integration/appearance/bubble_bg_color';
+    private const XML_BUBBLE_BG_ENABLED  = 'bs23_chat_integration/appearance/bubble_bg_enabled';
+    private const XML_BUBBLE_BG_COLOR    = 'bs23_chat_integration/appearance/bubble_bg_color';
     private const XML_HOVER_EFFECT    = 'bs23_chat_integration/appearance/hover_effect';
     private const XML_MAX_FILE_SIZE   = 'bs23_chat_integration/appearance/max_file_size';
+    private const XML_BUBBLE_ICON     = 'bs23_chat_integration/appearance/bubble_icon';
+    private const XML_CLOSE_ICON      = 'bs23_chat_integration/appearance/close_icon';
 
     // ── Defaults (mirrors etc/config.xml) ───────────────────────────────────
     private const DEFAULT_POSITION    = 'lower_right';
@@ -108,15 +111,27 @@ class Config
     }
 
     /**
-     * Return a validated hex color string or the default.
+     * Return a validated hex color string, or empty string if disabled/not set.
      */
     public function getBubbleBgColor(?string $scopeCode = null): string
     {
+        if (!$this->scopeConfig->isSetFlag(
+            self::XML_BUBBLE_BG_ENABLED,
+            ScopeInterface::SCOPE_STORE,
+            $scopeCode
+        )) {
+            return '';
+        }
+
         $color = (string) $this->scopeConfig->getValue(
             self::XML_BUBBLE_BG_COLOR,
             ScopeInterface::SCOPE_STORE,
             $scopeCode
         );
+
+        if ($color === '') {
+            return '';
+        }
 
         return preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $color)
             ? $color
@@ -141,5 +156,23 @@ class Config
         );
 
         return $value > 0 ? $value : self::DEFAULT_FILE_SIZE;
+    }
+
+    public function getBubbleIconPath(?string $scopeCode = null): string
+    {
+        return (string) $this->scopeConfig->getValue(
+            self::XML_BUBBLE_ICON,
+            ScopeInterface::SCOPE_STORE,
+            $scopeCode
+        );
+    }
+
+    public function getCloseIconPath(?string $scopeCode = null): string
+    {
+        return (string) $this->scopeConfig->getValue(
+            self::XML_CLOSE_ICON,
+            ScopeInterface::SCOPE_STORE,
+            $scopeCode
+        );
     }
 }

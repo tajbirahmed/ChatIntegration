@@ -333,6 +333,18 @@
     box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   10. NO BACKGROUND MODE (.bs23-no-bg)
+   Admin leaves the bubble background color field blank → transparent bubble.
+═══════════════════════════════════════════════════════════════════════════ */
+.bs23-no-bg .bs23-bubble-btn,
+.bs23-no-bg .bs23-bubble-btn:hover,
+.bs23-no-bg .bs23-bubble-btn:focus,
+.bs23-no-bg .bs23-bubble-btn:active {
+    background: transparent;
+    box-shadow: none;
+}
+
 .bs23-chat-link:focus-visible {
     outline: 3px solid var(--bs23-bubble-bg, #25D366);
     outline-offset: 2px;

@@ -12,6 +12,9 @@ namespace BS23\ChatIntegration\Api\Data;
  */
 interface ChatEntryInterface
 {
+    public const ICON_BG_COLOR   = 'icon_bg_color';
+    public const ICON_BG_ENABLED = 'icon_bg_enabled';
+
     public const ENTRY_ID   = 'entry_id';
     public const NAME       = 'name';
     public const URL        = 'url';
@@ -32,6 +35,12 @@ interface ChatEntryInterface
 
     public function getIcon(): ?string;
     public function setIcon(?string $icon): static;
+
+    public function getIconBgColor(): ?string;
+    public function setIconBgColor(?string $color): static;
+
+    public function getIconBgEnabled(): bool;
+    public function setIconBgEnabled(bool $enabled): static;
 
     public function getSortOrder(): int;
     public function setSortOrder(int $sortOrder): static;

@@ -36,11 +36,11 @@
         </arguments>
     </type>
 
-    <!-- Inject the virtual uploader into the Save controller -->
-    <type name="BS23\ChatIntegration\Controller\Adminhtml\ChatEntry\Save">
+    <!-- Inject CollectionProcessorInterface into the repository -->
+    <type name="BS23\ChatIntegration\Model\ChatEntryRepository">
         <arguments>
-            <argument name="imageUploader" xsi:type="object">
-                BS23\ChatIntegration\Model\ChatEntryImageUploader
+            <argument name="collectionProcessor" xsi:type="object">
+                Magento\Framework\Api\SearchCriteria\CollectionProcessor
             </argument>
         </arguments>
     </type>

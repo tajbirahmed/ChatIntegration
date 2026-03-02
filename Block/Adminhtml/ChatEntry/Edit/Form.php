@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace BS23\ChatIntegration\Block\Adminhtml\ChatEntry\Edit;
 
-use BS23\ChatIntegration\Api\Data\ChatEntryInterface;
+use BS23\ChatIntegration\Block\Adminhtml\Form\Element\ColorPicker as ColorPickerElement;
 use Magento\Backend\Block\Template\Context;
 use Magento\Backend\Block\Widget\Form\Generic;
+use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Data\FormFactory;
 use Magento\Framework\Registry;
 
@@ -22,6 +23,7 @@ class Form extends Generic
         Context $context,
         Registry $registry,
         FormFactory $formFactory,
+        private readonly DataPersistorInterface $dataPersistor,
         array $data = []
     ) {
         parent::__construct($context, $registry, $formFactory, $data);
@@ -29,8 +31,8 @@ class Form extends Generic
 
     protected function _prepareForm(): static
     {
-        /** @var ChatEntryInterface|null $entry */
-        $entry = $this->_coreRegistry->registry('bs23_chat_entry');
+        /** @var array $entryData */
+        $entryData = $this->dataPersistor->get('bs23_chat_entry') ?? [];
 
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create([
@@ -78,7 +80,7 @@ class Form extends Generic
         ]);
 
         // Show existing icon as a preview note when editing
-        if ($entry && $entry->getIcon()) {
+        if (!empty($entryData['icon'])) {
             $fieldset->addField('icon_preview', 'note', [
                 'label' => __('Current Icon'),
                 'text'  => sprintf(
@@ -86,12 +88,35 @@ class Form extends Generic
                     $this->escapeUrl(
                         $this->_storeManager->getStore()->getBaseUrl(
                             \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-                        ) . 'bs23/chatentry/' . ltrim($entry->getIcon(), '/')
+                        ) . 'bs23/chatentry/' . ltrim((string) $entryData['icon'], '/')
                     ),
-                    $this->escapeHtmlAttr($entry->getName())
+                    $this->escapeHtmlAttr((string) ($entryData['name'] ?? ''))
                 ),
             ]);
         }
+
+        $fieldset->addField('icon_bg_enabled', 'select', [
+            'name'   => 'icon_bg_enabled',
+            'label'  => __('Enable Icon Background Color'),
+            'title'  => __('Enable Icon Background Color'),
+            'values' => [
+                ['value' => '0', 'label' => __('No')],
+                ['value' => '1', 'label' => __('Yes')],
+            ],
+            'after_element_html' => '<script>require(["jquery"],function($){'
+                . '"use strict";'
+                . 'function bs23ToggleIconBg(){'
+                . '$("#row_icon_bg_color").toggle($("#icon_bg_enabled").val()==="1");}'
+                . 'bs23ToggleIconBg();'
+                . '$("#icon_bg_enabled").on("change",bs23ToggleIconBg);'
+                . '});</script>',
+        ]);
+
+        $fieldset->addField('icon_bg_color', ColorPickerElement::class, [
+            'name'  => 'icon_bg_color',
+            'label' => __('Icon Background Color'),
+            'title' => __('Icon Background Color'),
+        ]);
 
         $fieldset->addField('sort_order', 'text', [
             'name'  => 'sort_order',
@@ -112,8 +137,8 @@ class Form extends Generic
         ]);
 
         // ── Populate form with existing data ─────────────────────────────
-        if ($entry) {
-            $form->setValues($entry->getData());
+        if (!empty($entryData)) {
+            $form->setValues($entryData);
         }
 
         $this->setForm($form);

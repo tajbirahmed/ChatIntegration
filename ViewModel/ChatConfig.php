@@ -98,6 +98,36 @@ class ChatConfig implements ArgumentInterface
         }
     }
 
+    /**
+     * Full media URL for the admin-uploaded bubble icon; empty string if not set.
+     */
+    public function getBubbleIconUrl(): string
+    {
+        return $this->buildConfigImageUrl($this->config->getBubbleIconPath());
+    }
+
+    /**
+     * Full media URL for the admin-uploaded close icon; empty string if not set.
+     */
+    public function getCloseIconUrl(): string
+    {
+        return $this->buildConfigImageUrl($this->config->getCloseIconPath());
+    }
+
+    private function buildConfigImageUrl(string $path): string
+    {
+        if ($path === '') {
+            return '';
+        }
+
+        try {
+            $base = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA);
+            return $base . 'bs23/chatintegration/' . ltrim($path, '/');
+        } catch (\Exception) {
+            return '';
+        }
+    }
+
     // ── Delegated escaping helpers used directly in templates ──────────────
 
     public function escapeHtml(string $value): string

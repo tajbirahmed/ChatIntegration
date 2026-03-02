@@ -8,6 +8,7 @@ use BS23\ChatIntegration\Api\ChatEntryRepositoryInterface;
 use BS23\ChatIntegration\Api\Data\ChatEntryInterface;
 use BS23\ChatIntegration\Model\ResourceModel\ChatEntry as ChatEntryResource;
 use BS23\ChatIntegration\Model\ResourceModel\ChatEntry\CollectionFactory;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\Framework\Api\SearchResultsInterfaceFactory;
@@ -24,7 +25,8 @@ class ChatEntryRepository implements ChatEntryRepositoryInterface
         private readonly ChatEntryFactory $chatEntryFactory,
         private readonly ChatEntryResource $chatEntryResource,
         private readonly CollectionFactory $collectionFactory,
-        private readonly SearchResultsInterfaceFactory $searchResultsFactory
+        private readonly SearchResultsInterfaceFactory $searchResultsFactory,
+        private readonly CollectionProcessorInterface $collectionProcessor
     ) {}
 
     /**
@@ -69,26 +71,7 @@ class ChatEntryRepository implements ChatEntryRepositoryInterface
     {
         $collection = $this->collectionFactory->create();
 
-        // Apply filter groups
-        foreach ($searchCriteria->getFilterGroups() as $filterGroup) {
-            foreach ($filterGroup->getFilters() as $filter) {
-                $condition = $filter->getConditionType() ?: 'eq';
-                $collection->addFieldToFilter(
-                    $filter->getField(),
-                    [$condition => $filter->getValue()]
-                );
-            }
-        }
-
-        // Apply sort orders
-        if ($sortOrders = $searchCriteria->getSortOrders()) {
-            foreach ($sortOrders as $sortOrder) {
-                $collection->addOrder($sortOrder->getField(), $sortOrder->getDirection());
-            }
-        }
-
-        $collection->setCurPage($searchCriteria->getCurrentPage());
-        $collection->setPageSize($searchCriteria->getPageSize());
+        $this->collectionProcessor->process($searchCriteria, $collection);
 
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);

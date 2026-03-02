@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BS23\ChatIntegration\Controller\Adminhtml\ChatEntry;
 
+use BS23\ChatIntegration\Api\ChatEntryRepositoryInterface;
 use BS23\ChatIntegration\Model\ResourceModel\ChatEntry\CollectionFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
@@ -20,7 +21,8 @@ class MassDisable extends Action
     public function __construct(
         Context $context,
         private readonly Filter $filter,
-        private readonly CollectionFactory $collectionFactory
+        private readonly CollectionFactory $collectionFactory,
+        private readonly ChatEntryRepositoryInterface $chatEntryRepository
     ) {
         parent::__construct($context);
     }
@@ -32,8 +34,14 @@ class MassDisable extends Action
 
         foreach ($collection->getItems() as $entry) {
             $entry->setIsEnabled(false);
-            $entry->save();
-            $count++;
+            try {
+                $this->chatEntryRepository->save($entry);
+                $count++;
+            } catch (\Exception $e) {
+                $this->messageManager->addErrorMessage(
+                    __('Error disabling chat entry ID %1: %2', $entry->getId(), $e->getMessage())
+                );
+            }
         }
 
         $this->messageManager->addSuccessMessage(
