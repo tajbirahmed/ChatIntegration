@@ -19,14 +19,16 @@
 (function () {
     'use strict';
 
-    function init() {
+    function init()
+    {
         /* ── Element references ─────────────────────────────────────────── */
         var wrapper = document.getElementById('bs23ChatWrapper');
         var btn     = document.getElementById('bs23BubbleBtn');
         var panel   = document.getElementById('bs23ChatOptions');
 
         /* Guard – single-entry bubbles have no toggle logic */
-        if (!wrapper || !btn || !panel) { return; }
+        if (!wrapper || !btn || !panel) {
+            return; }
 
         var layout = (wrapper.getAttribute('data-layout') || 'vertical').trim();
         var count  = parseInt(wrapper.getAttribute('data-count') || '0', 10);
@@ -40,12 +42,15 @@
          * Arc span = 30° × item count, capped at 150°.
          * Recalculated on window resize / orientation change.
          * ─────────────────────────────────────────────────────────────────── */
-        function positionCircularItems() {
-            if (layout !== 'circular' || count < 2) { return; }
+        function positionCircularItems()
+        {
+            if (layout !== 'circular' || count < 2) {
+                return; }
 
             var items    = panel.querySelectorAll('.bs23-chat-option');
             var bubblePx = parseInt(
-                getComputedStyle(wrapper).getPropertyValue('--bs23-bubble-size'), 10
+                getComputedStyle(wrapper).getPropertyValue('--bs23-bubble-size'),
+                10
             ) || 56;
             var radius   = Math.max(bubblePx * 1.6, 80);
 
@@ -73,7 +78,8 @@
         window.addEventListener('resize', positionCircularItems);
 
         /* ── Open / close helpers ─────────────────────────────────────────── */
-        function openPanel() {
+        function openPanel()
+        {
             wrapper.classList.add('is-active');
             btn.setAttribute('aria-expanded', 'true');
             panel.setAttribute('aria-hidden', 'false');
@@ -83,7 +89,8 @@
             });
         }
 
-        function closePanel() {
+        function closePanel()
+        {
             wrapper.classList.remove('is-active');
             btn.setAttribute('aria-expanded', 'false');
             panel.setAttribute('aria-hidden', 'true');

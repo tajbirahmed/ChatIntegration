@@ -25,7 +25,8 @@ class ChatConfig implements ArgumentInterface
         private readonly CollectionFactory $collectionFactory,
         private readonly Escaper $escaper,
         private readonly StoreManagerInterface $storeManager
-    ) {}
+    ) {
+    }
 
     public function isEnabled(): bool
     {

@@ -40,7 +40,8 @@ class Config
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
-    ) {}
+    ) {
+    }
 
     public function isEnabled(?string $scopeCode = null): bool
     {
@@ -115,11 +116,13 @@ class Config
      */
     public function getBubbleBgColor(?string $scopeCode = null): string
     {
-        if (!$this->scopeConfig->isSetFlag(
-            self::XML_BUBBLE_BG_ENABLED,
-            ScopeInterface::SCOPE_STORE,
-            $scopeCode
-        )) {
+        if (
+            !$this->scopeConfig->isSetFlag(
+                self::XML_BUBBLE_BG_ENABLED,
+                ScopeInterface::SCOPE_STORE,
+                $scopeCode
+            )
+        ) {
             return '';
         }
 

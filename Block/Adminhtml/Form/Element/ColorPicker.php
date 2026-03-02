@@ -58,9 +58,9 @@ class ColorPicker extends Text
         string $default = '#ffffff'
     ): string {
         $hex  = self::normalizeHex($value, $default);
-        $eId  = htmlspecialchars($id,   ENT_QUOTES, 'UTF-8');
+        $eId  = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
         $eName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
-        $eHex = htmlspecialchars($hex,  ENT_QUOTES, 'UTF-8');
+        $eHex = htmlspecialchars($hex, ENT_QUOTES, 'UTF-8');
 
         // oninput handler: sync swatch colour, label text, and hidden value
         $onInput = "var v=this.value;"

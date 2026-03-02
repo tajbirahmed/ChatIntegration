@@ -27,7 +27,8 @@ class ChatEntryRepository implements ChatEntryRepositoryInterface
         private readonly CollectionFactory $collectionFactory,
         private readonly SearchResultsInterfaceFactory $searchResultsFactory,
         private readonly CollectionProcessorInterface $collectionProcessor
-    ) {}
+    ) {
+    }
 
     /**
      * @inheritDoc

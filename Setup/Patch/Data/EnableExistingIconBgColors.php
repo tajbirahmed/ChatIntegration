@@ -19,7 +19,8 @@ class EnableExistingIconBgColors implements DataPatchInterface
 {
     public function __construct(
         private readonly ModuleDataSetupInterface $moduleDataSetup
-    ) {}
+    ) {
+    }
 
     public function apply(): void
     {

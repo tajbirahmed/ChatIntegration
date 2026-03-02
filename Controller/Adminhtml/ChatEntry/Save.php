@@ -89,7 +89,6 @@ class Save extends Action
             }
 
             return $resultRedirect->setPath('*/*/index');
-
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         } catch (\Exception $e) {
