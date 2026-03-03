@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace BS23\ChatIntegration\Model;
 
+use Exception;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\File\Uploader;
 use Magento\Framework\File\UploaderFactory;
 use Magento\Framework\Filesystem;
 use Magento\Framework\Filesystem\Directory\WriteInterface;
-use Magento\Framework\Filesystem\DirectoryList;
+use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\UrlInterface;
-use Magento\MediaStorage\Helper\File\Storage\Database;
 use Magento\Store\Model\StoreManagerInterface;
 use Psr\Log\LoggerInterface;
 
@@ -34,9 +35,11 @@ class ImageUploader
 
     private readonly WriteInterface $mediaDirectory;
 
+    /**
+     * @throws FileSystemException
+     */
     public function __construct(
-        private readonly Database $coreFileStorageDatabase,
-        private readonly Filesystem $filesystem,
+        Filesystem $filesystem,
         private readonly UploaderFactory $uploaderFactory,
         private readonly StoreManagerInterface $storeManager,
         private readonly LoggerInterface $logger,
@@ -50,9 +53,10 @@ class ImageUploader
     /**
      * Move an uploaded file to the tmp media directory and return metadata.
      *
-     * @param string $fileId  HTML input name attribute
+     * @param string $fileId HTML input name attribute
      * @return array{name: string, type: string, tmp_name: string, url: string, size: int}
      * @throws LocalizedException
+     * @throws Exception
      */
     public function saveFileToTmpDir(string $fileId): array
     {
@@ -62,11 +66,9 @@ class ImageUploader
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(false);
 
-        // Validate MIME type to prevent extension spoofing
-        $fileInfo = $uploader->validateFile();
-        if (!in_array($fileInfo['type'], self::ALLOWED_MIME_TYPES, true)) {
+        if (!$uploader->checkMimeType(self::ALLOWED_MIME_TYPES)) {
             throw new LocalizedException(
-                __('File type "%1" is not allowed. Accepted formats: SVG, PNG, JPG, WebP.', $fileInfo['type'])
+                __('File type is not allowed. Accepted formats: SVG, PNG, JPG, WebP.')
             );
         }
 
@@ -80,8 +82,6 @@ class ImageUploader
         $result['url']      = $this->storeManager->getStore()->getBaseUrl(UrlInterface::URL_TYPE_MEDIA)
                               . $this->baseTmpPath . '/' . $result['file'];
         $result['name']     = $result['file'];
-
-        $this->coreFileStorageDatabase->saveFile($result['tmp_name']);
 
         return $result;
     }
@@ -97,7 +97,6 @@ class ImageUploader
         $baseTmpImagePath = $this->getFilePath($this->baseTmpPath, $imageName);
 
         try {
-            $this->coreFileStorageDatabase->copyFile($baseTmpImagePath, $baseImagePath);
             $this->mediaDirectory->renameFile($baseTmpImagePath, $baseImagePath);
         } catch (\Exception $e) {
             $this->logger->error(
