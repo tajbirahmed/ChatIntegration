@@ -36,6 +36,15 @@
         </arguments>
     </type>
 
+    <!-- Inject the virtual uploader into the Save controller -->
+    <type name="BS23\ChatIntegration\Controller\Adminhtml\ChatEntry\Save">
+        <arguments>
+            <argument name="imageUploader" xsi:type="object">
+                BS23\ChatIntegration\Model\ChatEntryImageUploader
+            </argument>
+        </arguments>
+    </type>
+
     <!-- Inject CollectionProcessorInterface into the repository -->
     <type name="BS23\ChatIntegration\Model\ChatEntryRepository">
         <arguments>

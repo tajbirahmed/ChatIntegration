@@ -5,17 +5,19 @@ declare(strict_types=1);
 namespace BS23\ChatIntegration\Controller\Adminhtml\ChatEntry;
 
 use BS23\ChatIntegration\Api\ChatEntryRepositoryInterface;
-use BS23\ChatIntegration\Model\ChatEntryFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
-use Magento\Framework\App\Request\DataPersistorInterface;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 
 /**
- * Admin controller: Edit an existing chat entry.
+ * Admin controller: Render the Chat Entry add/edit page.
+ *
+ * Data is supplied to the UI component form by the DataProvider,
+ * not via DataPersistor, so no model loading is needed here beyond
+ * resolving the page title.
  */
 class Edit extends Action
 {
@@ -24,35 +26,30 @@ class Edit extends Action
     public function __construct(
         Context $context,
         private readonly PageFactory $resultPageFactory,
-        private readonly ChatEntryRepositoryInterface $chatEntryRepository,
-        private readonly ChatEntryFactory $chatEntryFactory,
-        private readonly DataPersistorInterface $dataPersistor
+        private readonly ChatEntryRepositoryInterface $chatEntryRepository
     ) {
         parent::__construct($context);
     }
 
     public function execute(): Page|Redirect
     {
-        $id = (int) $this->getRequest()->getParam('entry_id');
+        $id         = (int) $this->getRequest()->getParam('entry_id');
+        $resultPage = $this->resultPageFactory->create();
+        $resultPage->setActiveMenu('BS23_ChatIntegration::chat_entry');
 
         if ($id) {
             try {
                 $entry = $this->chatEntryRepository->getById($id);
+                $resultPage->getConfig()->getTitle()->prepend(
+                    __('Edit Chat Entry: %1', $entry->getName())
+                );
             } catch (NoSuchEntityException) {
                 $this->messageManager->addErrorMessage(__('This chat entry no longer exists.'));
                 return $this->resultRedirectFactory->create()->setPath('*/*/index');
             }
         } else {
-            $entry = $this->chatEntryFactory->create();
+            $resultPage->getConfig()->getTitle()->prepend(__('New Chat Entry'));
         }
-
-        $this->dataPersistor->set('bs23_chat_entry', $entry->getData());
-
-        $resultPage = $this->resultPageFactory->create();
-        $resultPage->setActiveMenu('BS23_ChatIntegration::chat_entry');
-        $resultPage->getConfig()->getTitle()->prepend(
-            $id ? __('Edit Chat Entry: %1', $entry->getName()) : __('New Chat Entry')
-        );
 
         return $resultPage;
     }

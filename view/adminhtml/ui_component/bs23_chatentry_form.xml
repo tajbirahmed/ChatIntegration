@@ -7,21 +7,15 @@
             <item name="provider" xsi:type="string">bs23_chatentry_form.bs23_chatentry_form_data_source</item>
         </item>
         <item name="label" xsi:type="string" translate="true">Chat Entry Information</item>
+        <item name="template" xsi:type="string">templates/form/collapsible</item>
         <item name="reverseMetadataMerge" xsi:type="boolean">true</item>
     </argument>
 
     <settings>
         <buttons>
-            <button name="back">
-                <url path="*/*/index"/>
-                <class>back</class>
-                <label translate="true">Back</label>
-            </button>
-            <button name="save">
-                <url path="*/*/save"/>
-                <class>save primary</class>
-                <label translate="true">Save Chat Entry</label>
-            </button>
+            <button name="back"             class="BS23\ChatIntegration\Block\Adminhtml\ChatEntry\Edit\Button\Back"/>
+            <button name="save_and_continue" class="BS23\ChatIntegration\Block\Adminhtml\ChatEntry\Edit\Button\SaveAndContinue"/>
+            <button name="save"             class="BS23\ChatIntegration\Block\Adminhtml\ChatEntry\Edit\Button\Save"/>
         </buttons>
         <namespace>bs23_chatentry_form</namespace>
         <dataScope>data</dataScope>
@@ -110,15 +104,50 @@
             </formElements>
         </field>
 
-        <field name="icon_bg_color" sortOrder="35" formElement="input">
+        <field name="icon_bg_enabled" sortOrder="33" formElement="select">
+            <settings>
+                <dataType>text</dataType>
+                <label translate="true">Enable Icon Background Color</label>
+                <dataScope>icon_bg_enabled</dataScope>
+                <switcherConfig>
+                    <rules>
+                        <rule name="0">
+                            <value>0</value>
+                            <actions>
+                                <action name="0">
+                                    <target>bs23_chatentry_form.bs23_chatentry_form.general.icon_bg_color</target>
+                                    <callback>hide</callback>
+                                </action>
+                            </actions>
+                        </rule>
+                        <rule name="1">
+                            <value>1</value>
+                            <actions>
+                                <action name="0">
+                                    <target>bs23_chatentry_form.bs23_chatentry_form.general.icon_bg_color</target>
+                                    <callback>show</callback>
+                                </action>
+                            </actions>
+                        </rule>
+                    </rules>
+                    <enabled>true</enabled>
+                </switcherConfig>
+            </settings>
+            <formElements>
+                <select>
+                    <settings>
+                        <options class="Magento\Config\Model\Config\Source\Yesno"/>
+                    </settings>
+                </select>
+            </formElements>
+        </field>
+
+        <field name="icon_bg_color" sortOrder="35" formElement="colorPicker">
             <settings>
                 <dataType>text</dataType>
                 <label translate="true">Icon Background Color</label>
                 <dataScope>icon_bg_color</dataScope>
                 <notice translate="true">Hex color for the chat icon button background (e.g. #25D366). Leave blank for white.</notice>
-                <validation>
-                    <rule name="validate-css-color" xsi:type="boolean">false</rule>
-                </validation>
             </settings>
         </field>
 
@@ -131,6 +160,24 @@
                     <rule name="validate-number" xsi:type="boolean">true</rule>
                 </validation>
             </settings>
+        </field>
+
+        <field name="store_ids" sortOrder="45" formElement="multiselect">
+            <settings>
+                <label translate="true">Store View</label>
+                <dataScope>store_ids</dataScope>
+                <validation>
+                    <rule name="required-entry" xsi:type="boolean">true</rule>
+                </validation>
+                <notice translate="true">Select one or more store views, or "All Store Views".</notice>
+            </settings>
+            <formElements>
+                <multiselect>
+                    <settings>
+                        <options class="BS23\ChatIntegration\Model\Config\Source\StoreOptions"/>
+                    </settings>
+                </multiselect>
+            </formElements>
         </field>
 
         <field name="is_enabled" sortOrder="50" formElement="checkbox">

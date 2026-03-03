@@ -3,8 +3,7 @@
       xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <body>
         <referenceContainer name="content">
-            <block class="BS23\ChatIntegration\Block\Adminhtml\ChatEntry\Edit"
-                   name="bs23.chatentry.edit"/>
+            <uiComponent name="bs23_chatentry_form"/>
         </referenceContainer>
     </body>
 </page>
