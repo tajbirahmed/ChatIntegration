@@ -30,7 +30,6 @@
         </deps>
     </settings>
 
-    <!-- ── Data Source ──────────────────────────────────────────────────── -->
     <dataSource name="bs23_chatentry_form_data_source">
         <argument name="data" xsi:type="array">
             <item name="js_config" xsi:type="array">
@@ -49,13 +48,11 @@
         </dataProvider>
     </dataSource>
 
-    <!-- ── General Information fieldset ────────────────────────────────── -->
     <fieldset name="general">
         <settings>
             <label translate="true">Chat Entry Details</label>
         </settings>
 
-        <!-- Hidden primary key -->
         <field name="entry_id" formElement="input">
             <settings>
                 <dataType>text</dataType>
@@ -63,7 +60,6 @@
             </settings>
         </field>
 
-        <!-- Chat Name -->
         <field name="name" sortOrder="10" formElement="input">
             <settings>
                 <dataType>text</dataType>
@@ -76,7 +72,6 @@
             </settings>
         </field>
 
-        <!-- Deep Link URL -->
         <field name="url" sortOrder="20" formElement="input">
             <settings>
                 <dataType>text</dataType>
@@ -95,7 +90,6 @@
             </settings>
         </field>
 
-        <!-- Icon Upload -->
         <field name="icon" sortOrder="30"
                formElement="fileUploader">
             <settings>
@@ -116,7 +110,6 @@
             </formElements>
         </field>
 
-        <!-- Icon Background Color -->
         <field name="icon_bg_color" sortOrder="35" formElement="input">
             <settings>
                 <dataType>text</dataType>
@@ -129,7 +122,6 @@
             </settings>
         </field>
 
-        <!-- Sort Order -->
         <field name="sort_order" sortOrder="40" formElement="input">
             <settings>
                 <dataType>number</dataType>
@@ -141,7 +133,6 @@
             </settings>
         </field>
 
-        <!-- Enable / Disable toggle -->
         <field name="is_enabled" sortOrder="50" formElement="checkbox">
             <settings>
                 <dataType>boolean</dataType>

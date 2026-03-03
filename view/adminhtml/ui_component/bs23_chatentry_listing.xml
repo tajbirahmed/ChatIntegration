@@ -24,7 +24,6 @@
         </deps>
     </settings>
 
-    <!-- ── Data Source ─────────────────────────────────────────────────── -->
     <dataSource name="bs23_chatentry_listing_data_source"
                 component="Magento_Ui/js/grid/provider">
         <settings>
@@ -43,7 +42,6 @@
         </dataProvider>
     </dataSource>
 
-    <!-- ── Toolbar ─────────────────────────────────────────────────────── -->
     <listingToolbar name="listing_top">
         <settings>
             <sticky>true</sticky>
@@ -85,7 +83,6 @@
         <paging name="listing_paging"/>
     </listingToolbar>
 
-    <!-- ── Columns ─────────────────────────────────────────────────────── -->
     <columns name="bs23_chatentry_listing_columns">
         <settings>
             <editorConfig>
@@ -97,14 +94,12 @@
             </editorConfig>
         </settings>
 
-        <!-- Checkbox selection column -->
         <selectionsColumn name="ids">
             <settings>
                 <indexField>entry_id</indexField>
             </settings>
         </selectionsColumn>
 
-        <!-- ID -->
         <column name="entry_id">
             <settings>
                 <filter>textRange</filter>
@@ -113,7 +108,6 @@
             </settings>
         </column>
 
-        <!-- Chat Name -->
         <column name="name">
             <settings>
                 <filter>text</filter>
@@ -121,7 +115,6 @@
             </settings>
         </column>
 
-        <!-- Deep Link URL -->
         <column name="url">
             <settings>
                 <filter>text</filter>
@@ -129,7 +122,6 @@
             </settings>
         </column>
 
-        <!-- Sort Order -->
         <column name="sort_order">
             <settings>
                 <filter>textRange</filter>
@@ -137,7 +129,6 @@
             </settings>
         </column>
 
-        <!-- Status -->
         <column name="is_enabled" component="Magento_Ui/js/grid/columns/select">
             <settings>
                 <options class="Magento\Config\Model\Config\Source\Yesno"/>
@@ -147,7 +138,6 @@
             </settings>
         </column>
 
-        <!-- Created At -->
         <column name="created_at"
                 class="Magento\Ui\Component\Listing\Columns\Date"
                 component="Magento_Ui/js/grid/columns/date">
@@ -158,7 +148,6 @@
             </settings>
         </column>
 
-        <!-- Actions (Edit / Delete) -->
         <actionsColumn name="actions"
                        class="BS23\ChatIntegration\Ui\Component\Listing\Column\ChatEntryActions">
             <settings>
