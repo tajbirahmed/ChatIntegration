@@ -1,0 +1,37 @@
+{
+    "bs23_chat_entry": {
+        "column": {
+            "entry_id": true,
+            "name": true,
+            "url": true,
+            "icon": true,
+            "sort_order": true,
+            "is_enabled": true,
+            "icon_bg_color": true,
+            "icon_bg_enabled": true,
+            "created_at": true,
+            "updated_at": true
+        },
+        "constraint": {
+            "PRIMARY": true
+        },
+        "index": {
+            "BS23_CHAT_ENTRY_IS_ENABLED": true,
+            "BS23_CHAT_ENTRY_SORT_ORDER": true
+        }
+    },
+    "bs23_chat_entry_store": {
+        "column": {
+            "entry_id": true,
+            "store_id": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "BS23_CHAT_ENTRY_STORE_ENTRY_ID_BS23_CHAT_ENTRY_ENTRY_ID": true,
+            "BS23_CHAT_ENTRY_STORE_STORE_ID_STORE_STORE_ID": true
+        },
+        "index": {
+            "BS23_CHAT_ENTRY_STORE_STORE_ID": true
+        }
+    }
+}
