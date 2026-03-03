@@ -27,28 +27,28 @@ interface ChatEntryInterface
     public const UPDATED_AT = 'updated_at';
 
     public function getEntryId(): ?int;
-    public function setEntryId(int $entryId): static;
+    public function setEntryId(int $entryId): self;
 
     public function getName(): string;
-    public function setName(string $name): static;
+    public function setName(string $name): self;
 
     public function getUrl(): string;
-    public function setUrl(string $url): static;
+    public function setUrl(string $url): self;
 
     public function getIcon(): ?string;
-    public function setIcon(?string $icon): static;
+    public function setIcon(?string $icon): self;
 
     public function getIconBgColor(): ?string;
-    public function setIconBgColor(?string $color): static;
+    public function setIconBgColor(?string $color): self;
 
     public function getIconBgEnabled(): bool;
-    public function setIconBgEnabled(bool $enabled): static;
+    public function setIconBgEnabled(bool $enabled): self;
 
     public function getSortOrder(): int;
-    public function setSortOrder(int $sortOrder): static;
+    public function setSortOrder(int $sortOrder): self;
 
     public function getIsEnabled(): bool;
-    public function setIsEnabled(bool $isEnabled): static;
+    public function setIsEnabled(bool $isEnabled): self;
 
     public function getCreatedAt(): ?string;
     public function getUpdatedAt(): ?string;
@@ -57,5 +57,5 @@ interface ChatEntryInterface
     public function getStoreIds(): array;
 
     /** @param int[] $storeIds */
-    public function setStoreIds(array $storeIds): static;
+    public function setStoreIds(array $storeIds): self;
 }
