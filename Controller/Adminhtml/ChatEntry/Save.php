@@ -9,10 +9,11 @@ use BS23\ChatIntegration\Model\ChatEntryFactory;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\App\Request\Http as HttpRequest;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Exception\LocalizedException;
-use Magento\Framework\Filesystem;
 use Magento\Framework\File\UploaderFactory;
+use Magento\Framework\Filesystem;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -30,6 +31,7 @@ class Save extends Action
 
     public function __construct(
         Context $context,
+        private readonly HttpRequest $httpRequest,
         private readonly ChatEntryRepositoryInterface $chatEntryRepository,
         private readonly ChatEntryFactory $chatEntryFactory,
         private readonly UploaderFactory $uploaderFactory,
@@ -42,7 +44,7 @@ class Save extends Action
     public function execute(): Redirect
     {
         $resultRedirect = $this->resultRedirectFactory->create();
-        $data           = $this->getRequest()->getPostValue();
+        $data           = $this->httpRequest->getPostValue();
 
         if (empty($data)) {
             return $resultRedirect->setPath('*/*/index');
@@ -55,7 +57,6 @@ class Save extends Action
                 ? $this->chatEntryRepository->getById($id)
                 : $this->chatEntryFactory->create();
 
-            // ── Validate URL ─────────────────────────────────────────────
             $url = trim((string) ($data['url'] ?? ''));
             if ($url === '' || !filter_var($url, FILTER_VALIDATE_URL)) {
                 throw new LocalizedException(__('Please enter a valid deep link URL.'));
@@ -66,13 +67,11 @@ class Save extends Action
             $entry->setSortOrder((int) ($data['sort_order'] ?? 0));
             $entry->setIsEnabled((bool) ($data['is_enabled'] ?? false));
 
-            // ── Store view scope ──────────────────────────────────────────
             $storeIds = isset($data['store_ids'])
                 ? array_map('intval', (array) $data['store_ids'])
                 : [0]; // 0 = All Store Views
             $entry->setStoreIds($storeIds);
 
-            // ── Validate and store icon background color ──────────────────
             $iconBgColor = trim((string) ($data['icon_bg_color'] ?? ''));
             $entry->setIconBgEnabled((bool) ($data['icon_bg_enabled'] ?? false));
             $entry->setIconBgColor(
@@ -81,7 +80,6 @@ class Save extends Action
                     : null
             );
 
-            // ── Handle optional icon file upload ─────────────────────────
             $iconName = $this->uploadIcon($entry->getIcon());
             if ($iconName !== null) {
                 $entry->setIcon($iconName);
@@ -90,11 +88,13 @@ class Save extends Action
             $this->chatEntryRepository->save($entry);
             $this->messageManager->addSuccessMessage(__('Chat entry has been saved.'));
 
+            $result = $resultRedirect->setPath('*/*/index');
+
             if ($this->getRequest()->getParam('back')) {
-                return $resultRedirect->setPath('*/*/edit', ['entry_id' => $entry->getId()]);
+                $result = $resultRedirect->setPath('*/*/edit', ['entry_id' => $entry->getId()]);
             }
 
-            return $resultRedirect->setPath('*/*/index');
+            return $result;
         } catch (LocalizedException $e) {
             $this->messageManager->addErrorMessage($e->getMessage());
         } catch (\Exception $e) {
@@ -112,18 +112,16 @@ class Save extends Action
      *
      * @throws LocalizedException
      */
-    private function uploadIcon(?string $currentIcon): ?string
+    private function uploadIcon(): ?string
     {
-        $files = $this->getRequest()->getFiles();
+        $files = $this->httpRequest->getFiles();
         $file  = $files['icon_file'] ?? null;
 
-        // No file selected or empty upload
         if (!$file || empty($file['name']) || ($file['error'] ?? \UPLOAD_ERR_NO_FILE) === \UPLOAD_ERR_NO_FILE) {
             return null;
         }
 
         try {
-            // Validate MIME type from actual file bytes before handing off to uploader
             $finfo    = new \finfo(\FILEINFO_MIME_TYPE);
             $mimeType = $finfo->file($file['tmp_name']);
             if (!in_array($mimeType, self::ALLOWED_MIME_TYPES, true)) {
